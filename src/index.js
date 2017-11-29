@@ -6,6 +6,9 @@ function main() {
     var leftSide = parseLeftSide(inputString[0]);
     var rightSide = inputString[1];
 
+    //need to have a function that comes back with non leading zeros so that I can factor this in in the iterator
+    var nonLeadingZeros;
+
     if (inequality(leftSide, rightSide)) {
         return null;
     }
@@ -21,8 +24,17 @@ function iterator(inputString, leftSide, rightSide) {
     //var totalMax = findMaxTotal(rightSide);
     //var totalMin = findMinTotal(rightSide);
     var uniqueVariables = getUniqueVariables(inputString);
-    //var possibleValues =
-    console.log(uniqueVariables);
+    var combinations = [];
+    var combination = [];
+    uniqueVariables.forEach(function(variable) {
+        combination.push(0);
+    });
+    console.log(combination);
+
+}
+
+function zeroThroughNine(variable) {
+    return Array.apply(null, {length: 10}).map(Number.call, Number);
 }
 
 function getUniqueVariables(inputString) {
