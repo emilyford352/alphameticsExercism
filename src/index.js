@@ -1,7 +1,7 @@
 main();
 
 function main() {
-    var inputString = 'AS + A == MOM';
+    var inputString = 'A == BB';
     inputString = inputString.split(' == ');
     var leftSide = parseLeftSide(inputString[0]);
     var rightSide = inputString[1];
@@ -17,24 +17,32 @@ function main() {
         return null;
     }
 
-    iterator(inputString, leftSide, rightSide);
+    createPotentialSolutions(inputString, leftSide, rightSide);
 }
 
-function iterator(inputString, leftSide, rightSide) {
-    //var totalMax = findMaxTotal(rightSide);
-    //var totalMin = findMinTotal(rightSide);
+function createPotentialSolutions(inputString) {
     var uniqueVariables = getUniqueVariables(inputString);
-    var combinations = [];
-    var combination = [];
-    uniqueVariables.forEach(function(variable) {
-        combination.push(0);
+    var variableArrays = [];
+    var zeroThroughNine = Array.apply(null, {length: 10}).map(Number.call, Number);
+    uniqueVariables.forEach(function(){
+        variableArrays.push(zeroThroughNine);
     });
-    console.log(combination);
-
-}
-
-function zeroThroughNine(variable) {
-    return Array.apply(null, {length: 10}).map(Number.call, Number);
+    var possibleAnswers = [];
+    variableArrays.forEach(function(variableArray, index){
+       var test = [];
+       variableArray.forEach(function(variable){
+           test.push(variable);
+       })
+        console.log(test);
+    });
+    variableArrays[0].forEach(function(a1) {
+        variableArrays[1].forEach(function(a2) {
+            if(a1 !== a2) {
+                possibleAnswers.push([a1, a2])
+            }
+        });
+    });
+    //console.log(possibleAnswers);
 }
 
 function getUniqueVariables(inputString) {
@@ -46,12 +54,8 @@ function getUniqueVariables(inputString) {
     return filteredArray;
 }
 
-function onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
-}
-
 function inequality(leftSide, rightSide) {
-    if (leftSide.length == 1 && leftSide !== rightSide) {
+    if (leftSide.length == 1 && rightSide.length == 1 && leftSide !== rightSide) {
         return true;
     }
 }
@@ -68,15 +72,4 @@ function checkForLeadingZero(rightSide, leftSide) {
 
 function parseLeftSide(leftSide) {
     return leftSide.split(' + ');
-}
-
-function findMaxTotal(rightSide) {
-    var rightSideLength = rightSide.length;
-    return parseInt(Array(rightSideLength + 1).join(9));
-}
-
-function findMinTotal(rightSide) {
-    var rightSideLength = rightSide.length;
-    var min = Array(rightSideLength).join(0);
-    return parseInt('1' + min);
 }
