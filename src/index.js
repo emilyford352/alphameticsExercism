@@ -1,3 +1,4 @@
+'use strict';
 main();
 
 function main() {
@@ -5,9 +6,6 @@ function main() {
     inputString = inputString.split(' == ');
     var leftSide = parseLeftSide(inputString[0]);
     var rightSide = inputString[1];
-
-    //need to have a function that comes back with non leading zeros so that I can factor this in in the iterator
-    var nonLeadingZeros;
 
     if (inequality(leftSide, rightSide)) {
         return null;
@@ -17,36 +15,61 @@ function main() {
         return null;
     }
 
-    createPotentialSolutions(inputString, leftSide, rightSide);
+    var possibleSolutions = createPotentialSolutions(inputString, leftSide, rightSide);
+
+    var solution = calculateSolution(inputString, leftSide, rightSide, possibleSolutions);
+
+    console.log(solution);
+}
+
+function calculateSolution(inputString, leftSide, rightSide, possibleSolutions) {
+    var solutionObject = {};
+    var uniqueVariables = getUniqueVariables(inputString);
+    console.log(uniqueVariables);
+    possibleSolutions.forEach(function(possibleSolution) {
+        possibleSolution.forEach(function(solution, index) {
+           solutionObject[uniqueVariables[index]] = possibleSolution[index];
+        });
+
+
+        //var leftSideSolution = leftSide.reduce(function(a, b) { return a + b; }, 0);
+
+        //if (leftSideSolution === rightSide) {
+        //    solutionObject = possibleSolution;
+        //    return;
+        //}
+    });
 }
 
 function createPotentialSolutions(inputString) {
     var uniqueVariables = getUniqueVariables(inputString);
     var variableArrays = [];
     var zeroThroughNine = Array.apply(null, {length: 10}).map(Number.call, Number);
-    uniqueVariables.forEach(function(){
+    uniqueVariables.forEach(function(variable, index){
         variableArrays.push(zeroThroughNine);
     });
-    var possibleAnswers = [];
-    variableArrays.forEach(function(variableArray, index){
-       var test = [];
-       variableArray.forEach(function(variable){
-           test.push(variable);
-       })
-        console.log(test);
-    });
-    variableArrays[0].forEach(function(a1) {
-        variableArrays[1].forEach(function(a2) {
-            if(a1 !== a2) {
-                possibleAnswers.push([a1, a2])
-            }
-        });
-    });
-    //console.log(possibleAnswers);
+    return calculatePermutations(variableArrays);
+}
+
+function calculatePermutations(arrays) {
+    var r = [], max = arrays.length-1;
+
+    function helper(arr, i) {
+        for (var j=0, l=arrays[i].length; j<l; j++) {
+            var a = arr.slice(0); // clone arr
+            a.push(arrays[i][j]);
+            if (i==max)
+                r.push(a);
+            else
+                helper(a, i+1);
+        }
+    }
+    helper([], 0);
+    return r;
 }
 
 function getUniqueVariables(inputString) {
-    inputString[0] = inputString[0].split(' + ');
+    //inputString[0] = inputString[0].split(' + ');
     var uniqueVariables = inputString.join('').replace(',', '').split('');
     var filteredArray = uniqueVariables.filter(function(item, pos){
         return uniqueVariables.indexOf(item)== pos;
@@ -55,7 +78,7 @@ function getUniqueVariables(inputString) {
 }
 
 function inequality(leftSide, rightSide) {
-    if (leftSide.length == 1 && rightSide.length == 1 && leftSide !== rightSide) {
+    if (leftSide.length == 1 && rightSide.length == 1 && leftSide[0] !== rightSide) {
         return true;
     }
 }
